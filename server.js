@@ -75,7 +75,7 @@ async function initDB() {
         ('focus', 'This week: Growing in Love & Unity')
     `);
     await conn.query(`
-      INSERT IGNORE INTO rotation (id, week, lead, message) VALUES
+      INSERT IGNORE INTO rotation (id, week, `lead`, message) VALUES
         (1, 'Week 1', 'TBA', 'TBA'),
         (2, 'Week 2', 'TBA', 'TBA'),
         (3, 'Week 3', 'TBA', 'TBA'),
@@ -157,7 +157,7 @@ app.post('/api/focus', async (req, res) => {
 // ── ROTATION ─────────────────────────────────
 app.get('/api/rotation', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT week, lead, message FROM rotation ORDER BY id ASC');
+    const [rows] = await db.query('SELECT week, `lead`, message FROM rotation ORDER BY id ASC');
     ok(res, { rotation: rows });
   } catch (e) { fail(res, e.message); }
 });
@@ -168,7 +168,7 @@ app.post('/api/rotation', async (req, res) => {
   try {
     await db.query('DELETE FROM rotation');
     for (const r of rotation) {
-      await db.query('INSERT INTO rotation (week, lead, message) VALUES (?, ?, ?)',
+      await db.query('INSERT INTO rotation (week, `lead`, message) VALUES (?, ?, ?)',
         [r.week || '', r.lead || '', r.message || '']);
     }
     ok(res, { message: 'Rotation updated.' });
